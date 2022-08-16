@@ -19,6 +19,7 @@ jobs:
         pip install -r backend/requirements.txt 
     - name: Тестирование flake8
       run: |
+        cd backend
         python -m flake8
 
   build_and_push_to_docker_hub:
