@@ -5,6 +5,7 @@ on: [push]
 jobs:
 
   tests:
+    name: Тестирование
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -41,7 +42,7 @@ jobs:
           with:
             push: true
             tags: petrushque/foodgram:latest
-            context: foodgram
+            context: backend
             file: backend/Dockerfile
 
   deploy:
