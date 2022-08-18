@@ -6,22 +6,22 @@ services:
     volumes:
       - /var/lib/postgresql/data/
     env_file:
-      - ./.env
+      - ../backend/.env
 
   web:
     image: petrushque/foodgram:latest
     restart: always
-    volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
     depends_on:
       - db
     env_file:
-      - ./.env
+      - ../backend/.env
+    volumes:
+      - static_value:/app/static/
+      - media_value:/app/media/
 
   frontend:
     build:
-      context: frontend
+      context: ../frontend
       dockerfile: Dockerfile
     volumes:
       - ../frontend/:/app/result_build/
@@ -29,7 +29,7 @@ services:
       - web
 
   nginx:
-    image: nginx:1.21.3-alpine
+    image: nginx:1.21.3
     ports:
       - "80:80"
     volumes:
