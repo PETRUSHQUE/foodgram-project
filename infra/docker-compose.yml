@@ -9,7 +9,10 @@ services:
       - ../backend/.env
 
   web:
-    image: petrushque/foodgram:latest
+    # image: petrushque/foodgram:latest
+    build:
+      context: ../backend/foodgram
+      dockerfile: Dockerfile
     restart: always
     depends_on:
       - db
