@@ -105,8 +105,8 @@ USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/django/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'django/static')
 # STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static/'),)
 
 MEDIA_URL = '/media/'

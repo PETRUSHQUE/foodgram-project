@@ -1,8 +1,6 @@
-import rest_framework.mixins as mixins
 from djoser.views import UserViewSet
-from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.viewsets import GenericViewSet
+from rest_framework import mixins, permissions, viewsets
+from rest_framework.decorators import action, api_view, permission_classes
 
 from .paginators import PageLimitPagination
 from .serializers import SubscriptionSerializer
@@ -18,16 +16,18 @@ class UserViewSet(UserViewSet):
         return self.retrieve(request, *args, **kwargs)
 
 
-class SubscriptionViewSet(
-        GenericViewSet, mixins.CreateModelMixin,
-        mixins.DestroyModelMixin, mixins.ListModelMixin):
-    """Класс-контроллер для модели подписок."""
+class SubscriptionViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
+    """Класс-контроллер для получения списка модели подписок."""
     serializer_class = SubscriptionSerializer
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (permissions.IsAuthenticated, )
     search_fields = ('subscribing__username', )
 
     def get_queryset(self):
         return self.request.user.subscriber.all()
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+
+@api_view(['POST', 'DELETE', ])
+@permission_classes(permissions.IsAuthenticated)
+def subscribe(request):
+    """Контроллер подписки/отписки."""
+    pass
