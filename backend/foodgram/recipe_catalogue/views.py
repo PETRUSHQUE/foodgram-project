@@ -23,5 +23,5 @@ class IngredientViewSet(ListRetrieveViewSet):
 
 class RecipeViewSet(viewsets.ModelViewSet):
     """Класс-контроллер модели рецепт."""
-    serializer_class = serializers.RecipeSerializer
+    serializer_class = serializers.PostRecipeSerializer
     queryset = models.Recipe.objects.all()

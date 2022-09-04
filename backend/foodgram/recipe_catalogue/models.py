@@ -26,26 +26,39 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     """Модель класса ингридиент."""
     UNIT_CHOICES = [
-        ('грамм', 'г'),
-        ('килограмм', 'кг'),
-        ('миллилитр', 'мл'),
-        ('литр', 'л'),
-        ('штука', 'шт.'),
-        ('столовая ложка', 'ст. л.'),
-        ('чайная ложка', 'ч. л.'),
+        ('г', 'г'),
+        ('кг', 'кг'),
+        ('мл', 'мл'),
+        ('л', 'л'),
+        ('шт.', 'шт.'),
+        ('ст. л.', 'ст. л.'),
+        ('ч. л.', 'ч. л.'),
         ('упаковка', 'упаковка'),
-        ('порция', 'порц.'),
+        ('пачка', 'пачка'),
         ('бутылка', 'бутылка'),
         ('пакет', 'пакет'),
+        ('пакетик', 'пакетик'),
         ('по вкусу', 'по вкусу'),
         ('кусок', 'кусок'),
         ('стакан', 'стакан'),
         ('банка', 'банка'),
         ('горсть', 'горсть'),
+        ('щепотка', 'щепотка'),
+        ('веточка', 'веточка'),
+        ('стебель', 'стебель'),
+        ('капля', 'капля'),
+        ('пучок', 'пучок'),
+        ('лист', 'лист'),
+        ('стручок', 'стручок'),
+        ('тушка', 'тушка'),
+        ('звездочка', 'звездочка'),
+        ('порция', 'порция'),
+        ('батон', 'батон'),
+        ('ломтик', 'ломтик'),
     ]
     name = models.CharField('Название', max_length=255)
     measurement_unit = models.CharField(
-        'Единица измерения', choices=UNIT_CHOICES, default='гр.',
+        'Единица измерения', choices=UNIT_CHOICES, default='г',
         max_length=max(len(unit) for unit, _ in UNIT_CHOICES))
 
     class Meta:
@@ -109,19 +122,6 @@ class RecipeIngredient(models.Model):
         return f'{self.ingredient} входит в состав {self.recipe}.'
 
 
-# class RecipeTag(models.Model):
-#     """Класс модели связи между рецептами и тегами."""
-#     recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True)
-#     tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True)
-
-#     class Meta:
-#         verbose_name = 'Теги рецепта'
-#         verbose_name_plural = 'Теги рецептов'
-
-#     def __str__(self):
-#         return f'{self.tag} относится к {self.recipe}.'
-
-
 class BaseFavorite(models.Model):
     """Базовый класс избранных рецептов."""
     recipe = models.ForeignKey(
@@ -134,19 +134,18 @@ class BaseFavorite(models.Model):
     class Meta:
         abstract = True
         ordering = ('-id', )
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', 'recipe'), name='unique_%(class)ss')
-        ]
 
 
 class Favorite(BaseFavorite):
     """Класс модели избранных рецептов."""
 
     class Meta(BaseFavorite.Meta):
-        ordering = ('-id', )
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'), name='unique_favorite')
+        ]
 
     def __str__(self):
         return f'{self.recipe} в избранном у {self.user}.'
@@ -156,9 +155,12 @@ class ShoppingCart(BaseFavorite):
     """Класс модели списка покупок."""
 
     class Meta(BaseFavorite.Meta):
-        ordering = ('-id', )
         verbose_name = 'Корзина'
         verbose_name_plural = 'Корзина'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'), name='unique_cart')
+        ]
 
     def __str__(self):
         return f'{self.recipe} в корзине покупок у {self.user}.'

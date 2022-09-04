@@ -8,38 +8,28 @@ class RecipeAdmin(admin.ModelAdmin):
     """Класс админки для модели рецептов."""
     model = models.Recipe
     list_display = (
-        'title', 'author', 'duration', 'get_ingredients',
-        'get_tags', 'pub_date', )
-    list_filter = ('title', 'author', 'pub_date', )
+        'name', 'author', 'duration', 'get_ingredients', 'get_tags', )
+    list_filter = ('name', 'author', 'tag', )
     search_fields = (
-        'title', 'author', 'get_ingredients', 'get_tags', 'pub_date', )
+        'name', 'author', 'get_ingredients', 'get_tags', )
 
 
 @admin.register(models.Tag)
 class TagAdmin(admin.ModelAdmin):
     """Класс админки для модели тегов."""
     model = models.Tag
-    list_display = ('title', 'slug', 'color', )
-    list_filter = ('title', 'slug', )
-    search_fields = ('title', 'slug', )
-
-
-# @admin.register(models.RecipeTag)
-# class RecipeTagAdmin(admin.ModelAdmin):
-#     """Класс админки для модели связи тегов и рецептов."""
-#     model = models.RecipeTag
-#     list_display = ('recipe', 'tag', )
-#     list_filter = ('recipe', 'tag', )
-#     search_fields = ('recipe', 'tag', )
+    list_display = ('name', 'slug', 'color', )
+    list_filter = ('name', 'slug', )
+    search_fields = ('name', 'slug', )
 
 
 @admin.register(models.Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     """Класс админки для модели пользователя."""
     model = models.Ingredient
-    list_display = ('title', 'measurement_unit', )
-    list_filter = ('title', 'measurement_unit', )
-    search_fields = ('title', 'measurement_unit', )
+    list_display = ('name', 'measurement_unit', )
+    list_filter = ('measurement_unit', )
+    search_fields = ('name', 'measurement_unit', )
 
 
 @admin.register(models.RecipeIngredient)

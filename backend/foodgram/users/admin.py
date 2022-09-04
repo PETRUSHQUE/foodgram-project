@@ -1,22 +1,22 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import Subscription, User
+from . import models
 
 
-@admin.register(Subscription)
+@admin.register(models.Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     """Класс админки для модели подписок."""
-    model = Subscription
+    model = models.Subscription
     list_display = ('author', 'user', )
     list_filter = ('author', 'user', )
     search_fields = ('author', 'user', )
 
 
-@admin.register(User)
+@admin.register(models.User)
 class UserAdmin(UserAdmin):
     """Класс админки для модели пользователя."""
-    model = User
+    model = models.User
     list_display = (
         'username', 'email', 'first_name', 'last_name', 'is_staff', )
     list_filter = ('username', 'email', )
