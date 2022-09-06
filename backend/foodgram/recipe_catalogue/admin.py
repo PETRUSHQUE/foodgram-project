@@ -8,7 +8,7 @@ class RecipeAdmin(admin.ModelAdmin):
     """Класс админки для модели рецептов."""
     model = models.Recipe
     list_display = (
-        'name', 'author', 'duration', 'get_ingredients', 'get_tags', )
+        'name', 'author', 'cooking_time', 'get_ingredients', 'get_tags', )
     list_filter = ('name', 'author', 'tag', )
     search_fields = (
         'name', 'author', 'get_ingredients', 'get_tags', )

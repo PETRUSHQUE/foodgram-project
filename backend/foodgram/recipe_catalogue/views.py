@@ -1,3 +1,4 @@
+from api.pagination import PageLimitPagination
 from rest_framework import mixins, viewsets
 
 from . import models, serializers

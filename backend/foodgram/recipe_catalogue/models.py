@@ -77,8 +77,8 @@ class Recipe(models.Model):
         related_name='recipes', verbose_name='Автор')
     name = models.CharField('Название', max_length=200)
     description = models.TextField('Описание')
-    duration = models.IntegerField(
-        'Длительность', validators=[MinValueValidator(1)])
+    cooking_time = models.IntegerField(
+        'Длительность приготовления', validators=[MinValueValidator(1)])
     image = models.ImageField(
         'Картинка', upload_to=filename, blank=True, )
     # default='no_image.png',
