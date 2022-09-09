@@ -4,10 +4,6 @@ from django.db import models
 from users.models import User
 
 
-def filename(instance, filename):
-    return '/'.join(['recipes', str(instance.id), filename])
-
-
 class Tag(models.Model):
     """Модель класса тег."""
     name = models.CharField('Название', max_length=255, unique=True)
@@ -76,16 +72,16 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE,
         related_name='recipes', verbose_name='Автор')
     name = models.CharField('Название', max_length=200)
-    description = models.TextField('Описание')
+    text = models.TextField('Описание')
     cooking_time = models.IntegerField(
         'Длительность приготовления', validators=[MinValueValidator(1)])
-    image = models.ImageField(
-        'Картинка', upload_to=filename, blank=True, )
+    image = models.ImageField('Картинка', upload_to='recipe', blank=True, )
     # default='no_image.png',
-    ingredient = models.ManyToManyField(
+    ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredient',
-        related_name='ingredients', verbose_name='Ингредиенты')
-    tag = models.ManyToManyField(Tag, related_name='tags', verbose_name='Теги')
+        related_name='recipes', verbose_name='Ингредиенты')
+    tags = models.ManyToManyField(
+        Tag, related_name='recipes', verbose_name='Теги')
 
     class Meta:
         ordering = ('-id', )
@@ -96,10 +92,10 @@ class Recipe(models.Model):
         return self.name[:30]
 
     def get_ingredients(self):
-        return '\n'.join([ing.name for ing in self.ingredient.all()])
+        return '\n'.join([ing.name for ing in self.ingredients.all()])
 
     def get_tags(self):
-        return '\n'.join([tag.name for tag in self.ingredient.all()])
+        return '\n'.join([tag.name for tag in self.tags.all()])
 
     get_ingredients.short_description = 'Ингредиенты'
     get_tags.short_description = 'Теги'
@@ -107,9 +103,12 @@ class Recipe(models.Model):
 
 class RecipeIngredient(models.Model):
     """Класс модели связи между рецептами и ингредиентами."""
-    recipe = models.ForeignKey(Recipe, on_delete=models.SET_NULL, null=True)
+    recipe = models.ForeignKey(
+        Recipe, related_name='recipeingredients',
+        on_delete=models.SET_NULL, null=True)
     ingredient = models.ForeignKey(
-        Ingredient, on_delete=models.SET_NULL, null=True)
+        Ingredient, related_name='recipeingredients',
+        on_delete=models.SET_NULL, null=True)
     amount = models.PositiveSmallIntegerField(
         'Количество', validators=[MinValueValidator(1)])
 
@@ -117,6 +116,11 @@ class RecipeIngredient(models.Model):
         ordering = ('-id', )
         verbose_name = 'Ингредиенты рецепта'
         verbose_name_plural = 'Ингредиенты рецептов'
+        constraints = [
+            models.UniqueConstraint(
+                fields=('ingredient', 'recipe', ),
+                name='unique_ingredients_recipe')
+        ]
 
     def __str__(self):
         return f'{self.ingredient} входит в состав {self.recipe}.'
@@ -144,7 +148,7 @@ class Favorite(BaseFavorite):
         verbose_name_plural = 'Избранное'
         constraints = [
             models.UniqueConstraint(
-                fields=('user', 'recipe'), name='unique_favorite')
+                fields=('user', 'recipe', ), name='unique_favorite')
         ]
 
     def __str__(self):
@@ -159,7 +163,7 @@ class ShoppingCart(BaseFavorite):
         verbose_name_plural = 'Корзина'
         constraints = [
             models.UniqueConstraint(
-                fields=('user', 'recipe'), name='unique_cart')
+                fields=('user', 'recipe', ), name='unique_cart')
         ]
 
     def __str__(self):

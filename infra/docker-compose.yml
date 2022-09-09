@@ -20,7 +20,7 @@ services:
       - ../backend/.env
     volumes:
       - static_value:/app/django/static/
-      - media_value:/app/media/
+      - media_value:/app/django/media/
 
   frontend:
     build:
@@ -40,7 +40,7 @@ services:
       - ../frontend/build:/usr/share/nginx/html/
       - ../docs/:/usr/share/nginx/html/api/docs/
       - static_value:/var/html/django/static/
-      - media_value:/var/html/media/
+      - media_value:/var/html/django/media/
     depends_on:
       - frontend
 

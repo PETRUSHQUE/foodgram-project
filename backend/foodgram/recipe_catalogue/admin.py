@@ -9,7 +9,7 @@ class RecipeAdmin(admin.ModelAdmin):
     model = models.Recipe
     list_display = (
         'name', 'author', 'cooking_time', 'get_ingredients', 'get_tags', )
-    list_filter = ('name', 'author', 'tag', )
+    list_filter = ('author', 'tags', )
     search_fields = (
         'name', 'author', 'get_ingredients', 'get_tags', )
 
