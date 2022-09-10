@@ -76,7 +76,6 @@ class Recipe(models.Model):
     cooking_time = models.IntegerField(
         'Длительность приготовления', validators=[MinValueValidator(1)])
     image = models.ImageField('Картинка', upload_to='recipe', blank=True, )
-    # default='no_image.png',
     ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredient',
         related_name='recipes', verbose_name='Ингредиенты')

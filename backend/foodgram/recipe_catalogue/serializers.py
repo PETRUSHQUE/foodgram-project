@@ -5,6 +5,13 @@ from rest_framework.validators import UniqueTogetherValidator
 from . import models
 
 
+class Image64Field(Base64ImageField):
+    """Модификация поля."""
+
+    def to_representation(self, file):
+        return '/django/media/' + super().to_representation(file)
+
+
 class BaseFavoriteSerializer(serializers.ModelSerializer):
     """Базовый класс-сериализатор списка избранного."""
     user = serializers.PrimaryKeyRelatedField(
@@ -20,9 +27,7 @@ class FavoriteSerializer(BaseFavoriteSerializer):
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=models.Favorite.objects.all(),
-                fields=('recipe', 'user', )
-            )
-        ]
+                fields=('recipe', 'user', ))]
 
     def create(self, validated_data):
         return models.Favorite.objects.create(
@@ -38,9 +43,7 @@ class ShoppingCartSerializer(BaseFavoriteSerializer):
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=models.ShoppingCart.objects.all(),
-                fields=('recipe', 'user', )
-            )
-        ]
+                fields=('recipe', 'user', ))]
 
     def create(self, validated_data):
         return models.ShoppingCart.objects.create(
@@ -67,9 +70,9 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     """Класс-сериализатор модели связи ингредиентов и рецептов."""
     id = serializers.ReadOnlyField(source='ingredient.id')
     name = serializers.ReadOnlyField(source='ingredient.name')
-    amount = serializers.IntegerField(min_value=1)
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
+    amount = serializers.IntegerField(min_value=1)
 
     class Meta:
         model = models.RecipeIngredient
@@ -77,14 +80,12 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
         validators = [
             UniqueTogetherValidator(
                 queryset=models.RecipeIngredient.objects.all(),
-                fields=('ingredient', 'recipe', )
-            )
-        ]
+                fields=('ingredient', 'recipe', ))]
 
 
 class PartialRecipeSerializer(serializers.ModelSerializer):
     """Класс-сериализатор модели рецептов для получения части данных о них."""
-    image = Base64ImageField()
+    image = Image64Field()
 
     class Meta:
         model = models.Recipe
@@ -94,11 +95,11 @@ class PartialRecipeSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Класс-сериализатор модели рецепт для создания и изменения."""
-    image = Base64ImageField()
+    image = Image64Field()
     tags = TagSerializer(read_only=True, many=True)
-    author = serializers.SerializerMethodField()
     ingredients = RecipeIngredientSerializer(
         source='recipeingredients', many=True, read_only=True)
+    author = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -136,15 +137,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         """
         for ingredient in ingredients:
             models.RecipeIngredient.objects.get_or_create(
-                recipe=recipe,
-                ingredient_id=ingredient.get('id'),
-                amount=ingredient.get('amount'),
-            )
+                recipe=recipe, ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount'))
 
     def create(self, validated_data):
         recipe = models.Recipe.objects.create(**validated_data)
-        tags = self.initial_data.get('tags')
-        recipe.tags.set(tags)
+        recipe.tags.set(self.initial_data.get('tags'))
         self.create_ingredients(self.initial_data.get('ingredients'), recipe)
         return recipe
 
