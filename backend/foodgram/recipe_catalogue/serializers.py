@@ -135,10 +135,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         Вспомогательный метод создания объектов
         связанной модели ингредиенты рецепта.
         """
-        for ingredient in ingredients:
-            models.RecipeIngredient.objects.get_or_create(
-                recipe=recipe, ingredient_id=ingredient.get('id'),
-                amount=ingredient.get('amount'))
+        models.RecipeIngredient.objects.bulk_create([models.RecipeIngredient(
+            recipe=recipe, ingredient_id=ingredient.get('id'),
+            amount=ingredient.get('amount')) for ingredient in ingredients])
 
     def create(self, validated_data):
         recipe = models.Recipe.objects.create(**validated_data)

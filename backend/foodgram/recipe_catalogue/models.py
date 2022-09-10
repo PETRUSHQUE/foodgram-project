@@ -73,7 +73,7 @@ class Recipe(models.Model):
         related_name='recipes', verbose_name='Автор')
     name = models.CharField('Название', max_length=200)
     text = models.TextField('Описание')
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveIntegerField(
         'Длительность приготовления', validators=[MinValueValidator(1)])
     image = models.ImageField('Картинка', upload_to='recipe', blank=True, )
     ingredients = models.ManyToManyField(

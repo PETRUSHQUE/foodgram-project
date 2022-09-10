@@ -27,6 +27,7 @@ class Subscription(models.Model):
         verbose_name='Автор', on_delete=models.CASCADE)
 
     class Meta:
+        ordering = ('author__id', )
         verbose_name = 'Подписка'
         verbose_name_plural = 'Подписки'
         constraints = [
