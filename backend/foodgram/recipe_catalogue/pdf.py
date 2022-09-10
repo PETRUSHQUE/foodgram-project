@@ -7,8 +7,6 @@ INGREDIENT = '{num}. {name} - {amount} {unit}'
 
 def pfd_table(response, cart):
     """Метод формирования PDF таблицы."""
-    # переделать на полноценную таблицу вместо нумерованного списка, либо
-    # добавить шапку/футер к документу.
     pdfmetrics.registerFont(TTFont('times', 'timescyr.ttf'))
     page = canvas.Canvas(response)
     page.setFont('times', size=20)

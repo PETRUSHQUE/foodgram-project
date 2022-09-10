@@ -6,7 +6,7 @@ class User(AbstractUser):
     """Класс модели пользователя."""
     USERNAME_FIELD = 'email'
     email = models.EmailField('Email', max_length=255, unique=True)
-    REQUIRED_FIELDS = ['username', ]
+    REQUIRED_FIELDS = ('username', )
 
     class Meta:
         ordering = ('username', )
@@ -32,12 +32,10 @@ class Subscription(models.Model):
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'author', ),
-                name='unique_subscription'
-            ),
+                name='unique_subscription'),
             models.CheckConstraint(
                 check=~models.Q(user=models.F('author')),
-                name='prevent_self_subscription'
-            )
+                name='prevent_self_subscription')
         ]
 
     DESCRIPTION = '{subscriber} подписан на {subscribing}.'

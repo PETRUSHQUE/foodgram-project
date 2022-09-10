@@ -130,8 +130,3 @@ dmypy.json
 
 # .idea
 .idea
-
-# Static and media
-static/
-media/
-emails/

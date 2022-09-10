@@ -17,9 +17,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         validators = [
             serializers.UniqueTogetherValidator(
                 queryset=models.Subscription.objects.all(),
-                fields=['author', 'user', ]
-            )
-        ]
+                fields=('author', 'user', ))]
 
     def create(self, validated_data):
         return models.Subscription.objects.create(
@@ -57,10 +55,12 @@ class SubscriptionInfoSerializer(serializers.ModelSerializer):
     def get_recipes(self, obj):
         """Метод вывода рецептов автора."""
         from recipe_catalogue.serializers import PartialRecipeSerializer
-        recipes_limit = self.context.get('request').query_params.get(
+        request = self.context.get('request')
+        recipes_limit = request.query_params.get(
             'recipes_limit', settings.PAGE_SIZE)
         queryset = obj.author.recipes.all()[:int(recipes_limit)]
-        return PartialRecipeSerializer(queryset, many=True).data
+        return PartialRecipeSerializer(
+            queryset, many=True).data
 
     def get_recipes_count(self, obj):
         """Метод вывода количества рецептов автора."""
