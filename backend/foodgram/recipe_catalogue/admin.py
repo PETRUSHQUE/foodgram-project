@@ -3,6 +3,12 @@ from django.contrib import admin
 from . import models
 
 
+class RecipeIngredientInline(admin.TabularInline):
+    model = models.RecipeIngredient
+    min_num = 1
+    extra = 0
+
+
 @admin.register(models.Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     """Класс админки для модели рецептов."""
@@ -12,6 +18,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_filter = ('author', 'tags', )
     search_fields = (
         'name', 'author', 'get_ingredients', 'get_tags', )
+    inlines = (RecipeIngredientInline, )
 
 
 @admin.register(models.Tag)
