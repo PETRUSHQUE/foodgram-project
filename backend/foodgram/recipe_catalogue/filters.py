@@ -12,8 +12,7 @@ class IngredientFilter(SearchFilter):
 
 class RecipeFilter(FilterSet):
     """Класс-фильтр выдачи по рецептам."""
-    tags = filters.AllValuesMultipleFilter(
-        field_name='tags__slug', lookup_expr='contains')
+    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
     author = filters.ModelChoiceFilter(queryset=User.objects.all())
     is_favorited = filters.BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = filters.BooleanFilter(
