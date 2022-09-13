@@ -5,13 +5,6 @@ from rest_framework.validators import UniqueTogetherValidator
 from . import models
 
 
-class Image64Field(Base64ImageField):
-    """Модификация поля."""
-
-    def to_representation(self, file):
-        return '/django/media/' + super().to_representation(file)
-
-
 class BaseFavoriteSerializer(serializers.ModelSerializer):
     """Базовый класс-сериализатор списка избранного."""
     user = serializers.PrimaryKeyRelatedField(
@@ -85,7 +78,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
 
 class PartialRecipeSerializer(serializers.ModelSerializer):
     """Класс-сериализатор модели рецептов для получения части данных о них."""
-    image = Image64Field()
+    image = Base64ImageField()
 
     class Meta:
         model = models.Recipe
@@ -95,7 +88,7 @@ class PartialRecipeSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     """Класс-сериализатор модели рецепт для создания и изменения."""
-    image = Image64Field()
+    image = Base64ImageField()
     tags = TagSerializer(read_only=True, many=True)
     ingredients = RecipeIngredientSerializer(
         source='recipeingredients', many=True, read_only=True)

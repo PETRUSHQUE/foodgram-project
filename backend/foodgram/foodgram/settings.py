@@ -120,7 +120,6 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
-    'UPLOADED_FILES_USE_URL': False,
 }
 PAGE_SIZE = 6
 
